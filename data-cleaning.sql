@@ -45,19 +45,55 @@ rename column  "What is your work setup?" to "work_setup";
 alter table staging.compensation
 rename column  "Employer Type" to "employer_type";
 
---cleaning role column
+
+--Cleaning joining role with other_role column
+
 select 
-	   case when role ='Other' then '' else role
-	   end as role,
-	   other_role,
-	   level,
-	   experience_years,
-	   industry,
-	   gender,
-	   tech_stack,
-	   other_stack,
-	   salary,
-	   benefits,
-	   work_setup,
-	   employer_type
+	   concat(
+	   case when role ='Other' then '' 
+	        when role = 'N/A' then ''
+	        when role = 'N/a' then ''
+	        else role
+	        end, 
+	        other_role) as role,
+		    level,
+		    experience_years,
+		    industry,
+		    gender,
+		    tech_stack,
+		    other_stack,
+		    salary,
+		    benefits,
+		    work_setup,
+		    employer_type    
+from staging.compensation
+
+
+--Level cleaning
+
+	
+select 
+	   concat(
+	   case when role ='Other' then '' 
+	        when role = 'N/A' then ''
+	        when role = 'N/a' then ''
+	        else role
+	        end, 
+	        other_role) as role,
+		case when level = 'Senior Level  eg Senior Data Analyst' then 'Senior Level'
+			 when level = 'Mid-Level  eg Data Analyst' then 'Mid-Level'
+			 when level = 'Lead eg Lead Analyst' then 'Lead'
+			 when level = 'Junior  eg Junior Data Analyst' then 'Junior'
+			 when level = 'Manager eg Manager of Analytics' then 'Manager'
+		     else level
+		     end as level,
+		    experience_years,
+		    industry,
+		    gender,
+		    tech_stack,
+		    other_stack,
+		    salary,
+		    benefits,
+		    work_setup,
+		    employer_type    
 from staging.compensation
